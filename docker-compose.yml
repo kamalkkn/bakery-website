@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: fabulous@123
+      MYSQL_DATABASE: bakery_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user_password
+    ports:
+      - "3306:3306"  # Expose MySQL port
+    networks:
+      - bakery-network  # Connect to the custom network
+
+  web:
+    build: .  # Ensure you have a Dockerfile for your Node.js app
+    ports:
+      - "3000:3000"  # Expose Node.js app port
+    environment:
+      MYSQL_HOST: db  # Use the service name as hostname
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user_password
+      MYSQL_DATABASE: bakery_db
+    depends_on:
+      - db
+    networks:
+      - bakery-network  # Connect to the same network
+
+networks:
+  bakery-network:  # Define a custom network
+

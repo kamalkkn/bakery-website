@@ -23,6 +23,9 @@
             max-width: 150px;
             height: auto;
         }
+        #dynamic-products {
+            margin-top: 30px;
+        }
     </style>
 </head>
 <body>
@@ -37,7 +40,7 @@
             </div>
         </div>
 
-        <!-- Product Section -->
+        <!-- Static Product Section -->
         <h2>Our Products</h2>
         <div class="row">
             <!-- Product 1 -->
@@ -60,20 +63,10 @@
             </div>
         </div>
 
-        <!-- Additional Products Section (if any) -->
-        <div class="row">
-            <!-- Product 4 -->
-            <div class="col-md-4 product">
-                <img src="images/product4.png.jpg" alt="Product 4" class="img-fluid">
-                <h3>Product 4</h3>
-                <p>$15</p>
-            </div>
-            <!-- Product 5 -->
-            <div class="col-md-4 product">
-                <img src="images/product5.png.jpg" alt="Product 5" class="img-fluid">
-                <h3>Product 5</h3>
-                <p>$20</p>
-            </div>
+        <!-- Dynamic Product Section -->
+        <h2 id="dynamic-products-title">More Products</h2>
+        <div id="dynamic-products" class="row">
+            <!-- Dynamic products will be appended here via JavaScript -->
         </div>
     </div>
 
@@ -81,6 +74,32 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Fetch products from the server dynamically and display them -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Fetch products from the server
+            fetch('/products')
+                .then(response => response.json())
+                .then(products => {
+                    const dynamicProductsSection = document.getElementById('dynamic-products');
+                    products.forEach(product => {
+                        // Create product card dynamically
+                        const productCard = document.createElement('div');
+                        productCard.classList.add('col-md-4', 'product');
+                        productCard.innerHTML = `
+                            <img src="images/default-product.png" alt="${product.name}" class="img-fluid">
+                            <h3>${product.name}</h3>
+                            <p>$${product.price}</p>
+                        `;
+                        dynamicProductsSection.appendChild(productCard);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching products:', error);
+                });
+        });
+    </script>
 </body>
 </html>
 
